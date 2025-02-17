@@ -3,366 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>플레이스우도 키오스크</title>
+    <title>키오스크</title>
     <style>
-        body { font-family: 'Gulim', sans-serif; text-align: center; }
-        .hidden { display: none !important; }
-        .menu-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 20px; justify-items: center; }
-        .menu-item { font-size: 18px; padding: 10px; border: 1px solid #ccc; cursor: pointer; width: 200px; text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .menu-item img { width: 100px; height: 100px; object-fit: cover; margin-bottom: 10px; }
-        .cart-container { margin-top: 20px; }
-        .cart-table { width: 80%; margin: auto; border-collapse: collapse; }
-        .cart-table th, .cart-table td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-        .quantity-controls { display: flex; align-items: center; justify-content: center; }
-        .quantity-controls button { margin: 0 5px; cursor: pointer; }
-        .hot { color: red; font-weight: bold; }
-        .ice { color: blue; font-weight: bold; }
-        .popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 2px solid black; display: none; z-index: 10; }
-        .popup button { margin: 10px; padding: 10px; font-size: 18px; cursor: pointer; }
-        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: none; z-index: 9; }
-        .language-buttons { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .language-buttons button { width: var(--btn-width, 300px); height: var(--btn-height, 50px); font-size: 20px; cursor: pointer; text-align: center; display: flex; justify-content: center; align-items: center; }
-#backButton {
-    width: 300px;  /* 원하는 너비 */
-    height: 60px;  /* 원하는 높이 */
-    font-size: 20px;  /* 글자 크기 */
-    padding: 10px;  /* 내부 여백 */
-    margin-top: 20px;  /* 위쪽 여백 */
-    cursor: pointer;
-}
-.popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* ✅ 회색 반투명 배경 */
-    display: none;
-    z-index: 9;
-}
-
-.hot-button {
-    background-color: red;
-    color: black;
-    font-weight: bold;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-}
-
-.ice-button {
-    background-color: blue;
-    color: white;
-    font-weight: bold;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-}
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            transition: background-color 0.3s ease;
+        }
+        h1 {
+            font-size: 2em;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        button {
+            width: 200px;
+            padding: 15px;
+            font-size: 1.2em;
+            margin: 10px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ddd;
+        }
+        .button-container.row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 20px;
+        }
+        .option-button {
+            width: 180px;
+            height: 180px;
+            background-color: #f8f8f8;
+            border: 2px solid #ccc;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: center;
+        }
+        .option-button img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+        }
+        .option-button:hover {
+            background-color: #e0e0e0;
+            transform: scale(1.05);
+        }
+        .language-btn {
+            background-color: #b0e57c;
+            color: black;
+            border: 1px solid #8cbf5c;
+            font-weight: bold;
+        }
+        .language-btn:hover {
+            background-color: #98d46c;
+        }
+        #orderScreen {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 5;
+        }
+        #takeoutWarningPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 20;
+        }
+        #takeoutWarningPopup button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #ff5555;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
     </style>
 </head>
-<body onload="showLanguageScreen()">
-    <h1 id="kioskTitle">플레이스우도</h1>
+<body>
 
-    <div id="languageScreen" class="language-buttons">
-        <button onclick="showMenuScreen('ko')">한국어</button>
-        <button onclick="showMenuScreen('zh')">中文</button>
-        <button onclick="showMenuScreen('en')">English</button>
-        <button onclick="showMenuScreen('ja')">日本語</button>
+    <!-- 🔹 언어 선택 화면 -->
+    <div id="languageScreen">
+        <h1>플레이스우도</h1>
+        <div class="button-container">
+            <button class="language-btn" onclick="setLanguage('ko')">한국어</button>
+            <button class="language-btn" onclick="setLanguage('zh')">中文</button>
+            <button class="language-btn" onclick="setLanguage('en')">English</button>
+            <button class="language-btn" onclick="setLanguage('jp')">日本語</button>
+        </div>
     </div>
 
-<div id="menuScreen" class="hidden">
-    <h2 id="menuTitle">메뉴</h2>
-<div id="totalAmount" style="position: absolute; top: 20px; right: 20px; font-size: 24px; font-weight: bold; color: #333;">
-    총 합계: ₩0
-</div>
-    <!-- ✅ 장바구니 위치를 메뉴 위로 이동 -->
-    <div class="cart-container">
-        <h2 id="cartTitle">장바구니</h2>
-        <table class="cart-table">
-            <thead>
-                <tr>
-                    <th>NO</th>
-                    <th>상품명</th>
-                    <th>판매단가</th>
-                    <th>수량</th>
-                    <th>총액</th>
-                </tr>
-            </thead>
-            <tbody id="cartList"></tbody>
-        </table>
-    </div>
+    <!-- 🔹 어두운 배경 -->
+    <div id="overlay" onclick="closeOrderScreen()"></div>
 
-    <div id="menuList" class="menu-container"></div>
-
-    <button id="backButton" onclick="showLanguageScreen()">언어 선택 화면으로 돌아가기</button>
-    <button onclick="clearCart()" style="position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; font-size: 18px; cursor: pointer;">
-    장바구니 비우기
+    <!-- 🔹 매장/포장 선택 화면 -->
+    <div id="orderScreen">
+        <h1>이용 방법을 선택하세요</h1>
+        <div class="button-container row">
+<button id="store-btn" class="option-button" onclick="selectOption('store')">
+    <img src="images/store.png" alt="매장">
+    매장
 </button>
-</div>
+<button id="takeout-btn" class="option-button" onclick="selectOption('takeout')">
+    <img src="images/takeout.png" alt="포장">
+    포장
+</button>
 
+        </div>
+    </div>
 
-<div id="popupOverlay" class="popup-overlay"></div>
-<div id="popup" class="popup">
-    <p>HOT 또는 ICE를 선택하세요</p>
-    <button class="hot-button" onclick="confirmSelection('hot')">HOT</button>
-    <button class="ice-button" onclick="confirmSelection('ice')">ICE</button>
-</div>
-
-
+    <!-- 🔹 포장 경고 팝업 -->
+    <div id="takeoutWarningPopup">
+        <p id="warningMessage">포장을 선택하시면, 매장에서는 드실 수 없습니다. 죄송하지만, 나가주셔야 합니다.</p>
+        <button onclick="closeWarningPopup()">확인</button>
+    </div>
 
     <script>
-let cart = []; // 🚀 장바구니 배열 추가
-      let selectedLang = 'ko'; // 기본값을 한국어로 설정
-      let menuItems = {
-    ko: [
-        { name: "아메리카노", price: 6000, img: "americano.jpg" },
-        { name: "카페라떼", price: 6500, img: "cafelatte.jpg" },
-        { name: "바닐라라떼", price: 7000, img: "vanillalatte.jpg" },
-        { name: "카페모카", price: 7000, img: "cafemocha.jpg" },
-        { name: "우도땅콩크림라떼", price: 8500, img: "udopeanutcreamlatte.jpg" },
-        { name: "흑임자크림라떼", price: 8500, img: "blackseamelatte.jpg" },
-        { name: "우도땅콩아이스크림라떼", price: 9000, img: "udopeanuticecreamlatte.jpg" },
-        { name: "우도땅콩아포카토", price: 900, img: "udopeanutaffogato.jpg" },
-        { name: "에스프레소", price: 5000, img: "espresso.jpg" },
-        { name: "캐모마일", price: 6000, img: "chamomile.jpg" },
-        { name: "청귤차", price: 6000, img: "greentangerinetea.jpg" },
-        { name: "한라봉차", price: 6000, img: "hallabongtea.jpg" },
-        { name: "초코라떼", price: 7000, img: "chocolatte.jpg" },
-        { name: "녹차라떼", price: 7000, img: "greentealatte.jpg" },
-        { name: "청귤에이드", price: 7000, img: "greentangerineade.jpg" },
-        { name: "한라봉에이드", price: 7000, img: "hallabongade.jpg" },
-        { name: "블루레몬에이드", price: 7000, img: "bluelemonade.jpg" },
-        { name: "우도땅콩아이스크림", price: 5000, img: "Udo peanut ice cream.jpg" },
-        { name: "우도땅콩아이스크림과 크로플", price: 10000, img: "Udo peanut ice cream and croffle.jpg" },      
-        { name: "1664 블랑", price: 8000, img: "1664blanc.jpg" },
-        { name: "빅 웨이브", price: 9000, img: "bigwave.jpg" },
-        { name: "코로나", price: 7000, img: "corona.jpg" },
-        { name: "켈리", price: 5000, img: "kelly.jpg" }
-             ],
-    en: [       
-        { name: "Americano", price: 6000, img: "americano.jpg" },
-        { name: "Cafe latte", price: 6500, img: "cafelatte.jpg" },
-        { name: "Vanilla latte", price: 7000, img: "vanillalatte.jpg" },
-        { name: "Cafemocha", price: 7000, img: "cafemocha.jpg" },
-        { name: "Udo peanut cream latte", price: 8500, img: "udopeanutcreamlatte.jpg" },
-        { name: "Black sesame cream latte", price: 8500, img: "blackseamelatte.jpg" },
-        { name: "Udo peanut ice creamlatte", price: 9000, img: "udopeanuticecreamlatte.jpg" },
-        { name: "Udo peanut affogato", price: 900, img: "udopeanutaffogato.jpg" },
-        { name: "Espresso", price: 5000, img: "espresso.jpg" },
-        { name: "Chamomile", price: 6000, img: "chamomile.jpg" },
-        { name: "Green tangerine tea", price: 6000, img: "greentangerinetea.jpg" },
-        { name: "Hallabongtea", price: 6000, img: "hallabongtea.jpg" },
-        { name: "Chocolatte", price: 7000, img: "chocolatte.jpg" },
-        { name: "Green tea latte", price: 7000, img: "greentealatte.jpg" },
-        { name: "Greentangerine ade", price: 7000, img: "greentangerineade.jpg" },
-        { name: "Hallabong ade", price: 7000, img: "hallabongade.jpg" },
-        { name: "Bluelemon ade", price: 7000, img: "bluelemonade.jpg" },
-        { name: "Udo peanut ice cream", price: 5000, img: "Udo peanut ice cream.jpg" },
-        { name: "Udo peanut ice cream and croffle", price: 10000, img: "Udo peanut ice cream and croffle.jpg" },      
-        { name: "1664 Blanc", price: 8000, img: "1664blanc.jpg" },
-        { name: "Big wave", price: 9000, img: "bigwave.jpg" },
-        { name: "Corona", price: 7000, img: "corona.jpg" },
-        { name: "kelly", price: 5000, img: "kelly.jpg" }
+        const translations = {
+            ko: { store: "매장", takeout: "포장", warning: "포장을 선택하시면, 매장에서는 드실 수 없습니다. \n죄송하지만, 나가주셔야 합니다." },
+            en: { store: "Dine-In", takeout: "Takeout", warning: "If you choose takeout, you cannot eat inside. \nSorry, but you must leave." },
+            zh: { store: "堂食", takeout: "外带", warning: "如果选择外带，就不能在店内用餐。\n很抱歉，您需要离开。" },
+            jp: { store: "店内", takeout: "持ち帰り", warning: "持ち帰りを選択すると、店内では食べられません。\n申し訳ありませんが、退店してください。" }
+        };
 
-    ],
-    zh: [
-        { name: "美式咖啡", price: 6000, img: "americano.jpg" },
-        { name: "拿铁", price: 6500, img: "cafelatte.jpg" },
-        { name: "香草拿铁", price: 7000, img: "vanillalatte.jpg" },
-        { name: "摩卡", price: 7000, img: "cafemocha.jpg" },
-        { name: "花生奶油拿铁", price: 8500, img: "udopeanutcreamlatte.jpg" },
-        { name: "Black sesame cream latte", price: 8500, img: "blackseamelatte.jpg" },
-        { name: "Udo peanut ice creamlatte", price: 9000, img: "udopeanuticecreamlatte.jpg" },
-        { name: "Udo peanut affogato", price: 900, img: "udopeanutaffogato.jpg" },
-        { name: "Espresso", price: 5000, img: "espresso.jpg" },
-        { name: "Chamomile", price: 6000, img: "chamomile.jpg" },
-        { name: "Green tangerine tea", price: 6000, img: "greentangerinetea.jpg" },
-        { name: "Hallabongtea", price: 6000, img: "hallabongtea.jpg" },
-        { name: "Chocolatte", price: 7000, img: "chocolatte.jpg" },
-        { name: "Green tea latte", price: 7000, img: "greentealatte.jpg" },
-        { name: "Greentangerine ade", price: 7000, img: "greentangerineade.jpg" },
-        { name: "Hallabong ade", price: 7000, img: "hallabongade.jpg" },
-        { name: "Bluelemon ade", price: 7000, img: "bluelemonade.jpg" },
-        { name: "Udo peanut ice cream", price: 5000, img: "Udo peanut ice cream.jpg" },
-        { name: "Udo peanut ice cream and croffle", price: 10000, img: "Udo peanut ice cream and croffle.jpg" },      
-        { name: "1664 Blanc", price: 8000, img: "1664blanc.jpg" },
-        { name: "Big wave", price: 9000, img: "bigwave.jpg" },
-        { name: "Corona", price: 7000, img: "corona.jpg" },
-        { name: "kelly", price: 5000, img: "kelly.jpg" }
+        let selectedLanguage = "ko"; // 기본 언어
 
-    ],
-    ja: [  
-        { name: "美式咖啡", price: 6000, img: "americano.jpg" },
-        { name: "拿铁", price: 6500, img: "cafelatte.jpg" },
-        { name: "香草拿铁", price: 7000, img: "vanillalatte.jpg" },
-        { name: "摩卡", price: 7000, img: "cafemocha.jpg" },
-        { name: "花生奶油拿铁", price: 8500, img: "udopeanutcreamlatte.jpg" },
-        { name: "Black sesame cream latte", price: 8500, img: "blackseamelatte.jpg" },
-        { name: "Udo peanut ice creamlatte", price: 9000, img: "udopeanuticecreamlatte.jpg" },
-        { name: "Udo peanut affogato", price: 900, img: "udopeanutaffogato.jpg" },
-        { name: "Espresso", price: 5000, img: "espresso.jpg" },
-        { name: "Chamomile", price: 6000, img: "chamomile.jpg" },
-        { name: "Green tangerine tea", price: 6000, img: "greentangerinetea.jpg" },
-        { name: "Hallabongtea", price: 6000, img: "hallabongtea.jpg" },
-        { name: "Chocolatte", price: 7000, img: "chocolatte.jpg" },
-        { name: "Green tea latte", price: 7000, img: "greentealatte.jpg" },
-        { name: "Greentangerine ade", price: 7000, img: "greentangerineade.jpg" },
-        { name: "Hallabong ade", price: 7000, img: "hallabongade.jpg" },
-        { name: "Bluelemon ade", price: 7000, img: "bluelemonade.jpg" },
-        { name: "Udo peanut ice cream", price: 5000, img: "Udo peanut ice cream.jpg" },
-        { name: "Udo peanut ice cream and croffle", price: 10000, img: "Udo peanut ice cream and croffle.jpg" },      
-        { name: "1664 Blanc", price: 8000, img: "1664blanc.jpg" },
-        { name: "Big wave", price: 9000, img: "bigwave.jpg" },
-        { name: "Corona", price: 7000, img: "corona.jpg" },
-        { name: "kelly", price: 5000, img: "kelly.jpg" }
-       ],      
-};          
-        let selectedItem = null;
-
-        function showLanguageScreen() {
-            document.getElementById('languageScreen').classList.remove('hidden');
-            document.getElementById('menuScreen').classList.add('hidden');
+        function setLanguage(lang) {
+            selectedLanguage = lang;
+            updatePopupText();
+            document.getElementById("orderScreen").style.display = "block"; 
+            document.getElementById("overlay").style.display = "block"; 
         }
 
-function showMenuScreen(lang) {
-    selectedLang = lang;  
-    console.log("선택된 언어:", selectedLang);  
-    document.getElementById('languageScreen').classList.add('hidden');
-    document.getElementById('menuScreen').classList.remove('hidden');
-    displayMenu();  // ✅ 올바르게 메뉴를 표시
-    updateCart();
-}
-
-
-
-function displayMenu() {
-    let menuList = document.getElementById('menuList');
-    menuList.innerHTML = '';
-
-    let menuData = menuItems[selectedLang] || menuItems["ko"];  // 🚀 기본 언어 설정 추가
-
-    menuData.forEach((item, index) => {
-        let translatedName = item.name;
-        let menuItem = `<div class='menu-item' onclick='showPopup(${index})'>
-            <img src='${item.img}' alt='${translatedName}'>
-            <p>${translatedName}</p>
-            <p>₩${item.price}</p>
-        </div>`;
-        menuList.innerHTML += menuItem;
-    });
-}
-
-
-
-function showPopup(index) {
-    selectedItem = menuItems[selectedLang][index];  
-    document.getElementById('popup').style.display = 'block';
-    document.getElementById('popupOverlay').style.display = 'block';
-}
-
-
-        function closePopup() {
-            document.getElementById('popup').style.display = 'none';
-            document.getElementById('popupOverlay').style.display = 'none';
-            selectedItem = null;
+        function updatePopupText() {
+            document.getElementById("store-btn").innerHTML = `<img src="images/store.png" alt="매장"> ${translations[selectedLanguage].store}`;
+            document.getElementById("takeout-btn").innerHTML = `<img src="images/takeout.png" alt="포장"> ${translations[selectedLanguage].takeout}`;
         }
 
-function confirmSelection(type) {
-    if (!selectedItem) return;
-    
-    let itemName = selectedItem.name;  // 선택한 언어의 메뉴명
-    let itemPrice = selectedItem.price;
+function selectOption(option) {
+    const selectedOption = translations[selectedLanguage][option];
 
-    // 한국어 메뉴 이름 찾기
-    let koreanItem = menuItems['ko'].find(i => i.img === selectedItem.img);
-    let koreanName = koreanItem ? koreanItem.name : itemName;
-
-    // 장바구니에 저장할 형식: "Americano (Ice) - 아메리카노 (Ice)"
-    let fullItemName = `${itemName} (${type.toUpperCase()}) - ${koreanName} (${type.toUpperCase()})`;
-
-    let cartItem = cart.find(i => i.name === fullItemName);
-    
-    if (cartItem) {
-        cartItem.quantity += 1;
+    if (selectedOption === translations[selectedLanguage].takeout) {
+        document.getElementById("warningMessage").textContent = translations[selectedLanguage].warning;
+        document.getElementById("takeoutWarningPopup").style.display = "block";
+        document.getElementById("overlay").style.display = "block"; // 🔹 오버레이 활성화
+        document.body.style.pointerEvents = "none"; // 🔹 모든 클릭 차단
+        document.getElementById("takeoutWarningPopup").style.pointerEvents = "auto"; // 🔹 경고창만 클릭 가능
     } else {
-        cart.push({ name: fullItemName, price: itemPrice, quantity: 1, type: type });
+        goToMenu(); // 매장을 선택하면 바로 메뉴 페이지로 이동
     }
-    
-    updateCart();
-    closePopup();
 }
 
-function updateCart() {
-    let cartList = document.getElementById('cartList');
-    let totalAmountElement = document.getElementById('totalAmount'); 
-    let totalAmount = 0;
-
-    cartList.innerHTML = '';
-    cart.forEach((item, index) => {
-        let classType = item.type === 'hot' ? 'hot' : 'ice';
-        let itemTotal = item.price * item.quantity;
-        totalAmount += itemTotal;
-
-        let cartRow = `<tr class="${classType}">
-            <td>${index + 1}</td>
-            <td>${item.name}</td> <!-- ✅ 한국어 포함된 메뉴명 표시 -->
-            <td>₩${item.price.toLocaleString()}</td>
-            <td class="quantity-controls">
-                <button onclick="changeQuantity(${index}, -1)">-</button>
-                ${item.quantity}
-                <button onclick="changeQuantity(${index}, 1)">+</button>
-            </td>
-            <td>₩${itemTotal.toLocaleString()}</td>
-        </tr>`;
-        cartList.innerHTML += cartRow;
-    });
-
-    totalAmountElement.innerText = `총 합계: ₩${totalAmount.toLocaleString()}`;
+function closeOrderScreen() {
+    document.getElementById("orderScreen").style.display = "none";
+    document.getElementById("overlay").style.display = "none";
+    document.body.style.pointerEvents = "auto"; // 🔹 클릭 다시 활성화
 }
 
-function confirmSelection(type) {
-    if (!selectedItem) return;
-    
-    let itemName = selectedItem.name;
-    let itemPrice = selectedItem.price;
-    
-    let cartItem = cart.find(i => i.name === itemName && i.type === type);
-    
-    if (cartItem) {
-        cartItem.quantity += 1;
-    } else {
-        cart.push({ name: itemName, price: itemPrice, quantity: 1, type: type });
-    }
-    
-    updateCart();
-    closePopup();
-}
-let translations = {
-    ko: "언어 선택 화면으로 돌아가기",
-    en: "Return to Language Selection",
-    zh: "返回语言选择",
-    ja: "言語選択画面に戻る"
-};
 
-function showMenuScreen(lang) {
-    selectedLang = lang;  
-    console.log("선택된 언어:", selectedLang);  
-    document.getElementById('languageScreen').classList.add('hidden');
-    document.getElementById('menuScreen').classList.remove('hidden');
-    document.getElementById('backButton').innerText = translations[selectedLang]; // ✅ 버튼 언어 변경
-    displayMenu();
-    updateCart();
+function closeWarningPopup() {
+    document.getElementById("takeoutWarningPopup").style.display = "none";
+    document.getElementById("overlay").style.display = "none"; // 🔹 오버레이 해제
+    document.body.style.pointerEvents = "auto"; // 🔹 클릭 다시 활성화
+    goToMenu(); // 🔹 포장 확인 후 메뉴 페이지로 이동
 }
-function clearCart() {
-    cart = [];  // 🚀 장바구니 배열 초기화
-    updateCart();  // ✅ 장바구니 UI 업데이트
+function goToMenu() {
+window.location.href = `menu.html`;
+
 }
-// 팝업 외부 클릭 시 닫힘 기능 추가
-document.getElementById("popupOverlay").addEventListener("click", function () {
-    closePopup();
-});
     </script>
+
 </body>
 </html>
