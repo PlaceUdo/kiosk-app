@@ -148,33 +148,37 @@
         </div>
     </div>
 
-    <!-- 🔹 포장 경고 팝업 -->
-    <div id="takeoutWarningPopup">
-        <p id="warningMessage">포장을 선택하시면, 매장에서는 드실 수 없습니다. 죄송하지만, 나가주셔야 합니다.</p>
-        <button onclick="closeWarningPopup()">확인</button>
-    </div>
+<!-- 🔹 포장 경고 팝업 -->
+<div id="takeoutWarningPopup">
+    <p id="warningMessage"></p>
+    <button id="agreeButton" onclick="closeWarningPopup()"></button>
+</div>
 
     <script>
-        const translations = {
-            ko: { store: "매장", takeout: "포장", warning: "포장을 선택하시면, 매장에서는 드실 수 없습니다. \n죄송하지만, 나가주셔야 합니다." },
-            en: { store: "Dine-In", takeout: "Takeout", warning: "If you choose takeout, you cannot eat inside. \nSorry, but you must leave." },
-            zh: { store: "堂食", takeout: "外带", warning: "如果选择外带，就不能在店内用餐。\n很抱歉，您需要离开。" },
-            jp: { store: "店内", takeout: "持ち帰り", warning: "持ち帰りを選択すると、店内では食べられません。\n申し訳ありませんが、退店してください。" }
-        };
+    const translations = {
+        ko: { store: "매장", takeout: "포장", warning: "포장을 선택하시면, 매장에서는 드실 수 없습니다.\n죄송하지만, 나가주셔야 합니다.", agree: "동의" },
+        en: { store: "Dine-In", takeout: "Takeout", warning: "If you choose takeout, you cannot eat inside.\nSorry, but you must leave.", agree: "Agree" },
+        zh: { store: "堂食", takeout: "外带", warning: "如果选择外带，就不能在店内用餐。\n很抱歉，您需要离开。", agree: "同意" },
+        jp: { store: "店内", takeout: "持ち帰り", warning: "持ち帰りを選択すると、店内では食べられません。\n申し訳ありませんが、退店してください。", agree: "同意" }
+    };
 
-        let selectedLanguage = "ko"; // 기본 언어
+    let selectedLanguage = "ko"; // 기본 언어
 
-        function setLanguage(lang) {
-            selectedLanguage = lang;
-            updatePopupText();
-            document.getElementById("orderScreen").style.display = "block"; 
-            document.getElementById("overlay").style.display = "block"; 
-        }
+    function setLanguage(lang) {
+        selectedLanguage = lang;
+        updatePopupText();
+        document.getElementById("orderScreen").style.display = "block";
+        document.getElementById("overlay").style.display = "block";
+    }
 
-        function updatePopupText() {
-            document.getElementById("store-btn").innerHTML = `<img src="images/store.png" alt="매장"> ${translations[selectedLanguage].store}`;
-            document.getElementById("takeout-btn").innerHTML = `<img src="images/takeout.png" alt="포장"> ${translations[selectedLanguage].takeout}`;
-        }
+    function updatePopupText() {
+        document.getElementById("store-btn").innerHTML = `<img src="images/store.png" alt="매장"> ${translations[selectedLanguage].store}`;
+        document.getElementById("takeout-btn").innerHTML = `<img src="images/takeout.png" alt="포장"> ${translations[selectedLanguage].takeout}`;
+
+        // 🔹 경고 메시지 및 버튼 업데이트
+        document.getElementById("warningMessage").textContent = translations[selectedLanguage].warning;
+        document.getElementById("agreeButton").textContent = translations[selectedLanguage].agree;
+    }
 
 function selectOption(option) {
     const selectedOption = translations[selectedLanguage][option];
@@ -204,7 +208,7 @@ function closeWarningPopup() {
     goToMenu(); // 🔹 포장 확인 후 메뉴 페이지로 이동
 }
 function goToMenu() {
-window.location.href = `menu.html`;
+window.location.href = `menu-${selectedLanguage}.html`;
 
 }
     </script>
