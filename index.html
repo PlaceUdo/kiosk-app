@@ -220,9 +220,20 @@ function closeWarningPopup() {
     goToMenu(); // 🔹 포장 확인 후 메뉴 페이지로 이동
 }
 function goToMenu() {
-window.location.href = `menu-${selectedLanguage}.html`;
-
+    // 메뉴 페이지 이동 전에 localStorage에 플래그 설정
+    localStorage.setItem('menuReturn', 'true');
+    window.location.href = `menu-${selectedLanguage}.html`;
 }
+
+// 페이지 로드 시
+window.addEventListener('DOMContentLoaded', function() {
+    // localStorage에 menuReturn 플래그가 설정되어 있는지 확인
+    if (localStorage.getItem('menuReturn') === 'true') {
+        // 설정되어 있다면 페이지 새로고침
+        localStorage.removeItem('menuReturn'); // 플래그 제거
+        window.location.reload();
+    }
+});
     </script>
 </body>
 </html>
