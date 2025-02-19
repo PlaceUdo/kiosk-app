@@ -344,7 +344,7 @@ function hideTemperatureModal() {
       function updateCart() {
           cartItemsContainer.innerHTML = '';
           if (cart.length === 0) {
-              cartItemsContainer.innerHTML = '<p class="text-gray-500 text-center py-4">장바구니가 비어있습니다.</p>';
+              cartItemsContainer.innerHTML = '<p class="text-gray-500 text-center py-4">장바구니가 비었습니다.</p>';
               totalPriceElement.textContent = '₩0';
               localStorage.removeItem('cart'); // 장바구니가 비었으면 로컬 스토리지에서도 삭제
               return;
@@ -475,7 +475,64 @@ document.addEventListener("DOMContentLoaded", function () {
           updateCart();
           localStorage.removeItem('cart'); // 로컬 스토리지에서도 삭제
       }
+  let timeout;
+  let warningTimeout;
+  let warningDisplayed = false;
+  let remainingTime = 5; // 5초 카운트다운
+
+  function startTimer() {
+    clearTimeout(timeout);
+    clearTimeout(warningTimeout);
+    warningDisplayed = false;
+    hideWarningPopup(); // 팝업 숨기기
+
+    // 25초 후 경고창 표시 + 카운트다운 시작
+    warningTimeout = setTimeout(() => {
+      showWarningPopup();
+    }, 250000); // 25초
+
+    // 30초 후 이동
+    timeout = setTimeout(() => {
+      window.location.href = "index.html"; // 이동할 페이지 (언어 선택 화면)
+    }, 300000); // 30초
+  }
+
+  function showWarningPopup() {
+    if (!warningDisplayed) {
+      warningDisplayed = true;
+      remainingTime = 5; // 5초부터 시작
+      document.getElementById("warningPopup").style.display = "block";
+      updateWarningText();
+    }
+  }
+
+  function updateWarningText() {
+    if (remainingTime > 0) {
+      document.getElementById("warningText").innerText = `${remainingTime} 초 후 언어 선택 화면으로 돌아갑니다.`;
+      remainingTime--;
+      setTimeout(updateWarningText, 1000); // 1초마다 업데이트
+    }
+  }
+
+  function hideWarningPopup() {
+    document.getElementById("warningPopup").style.display = "none";
+  }
+
+  // 이벤트 리스너 추가 (터치, 클릭, 키 입력 시 타이머 리셋)
+  window.addEventListener("mousemove", resetTimer);
+  window.addEventListener("mousedown", resetTimer);
+  window.addEventListener("keydown", resetTimer);
+  window.addEventListener("touchstart", resetTimer);
+
+  // 페이지 로드 시 타이머 시작
+    window.onload = startTimer;
 
     </script>
+<div id="warningPopup" 
+     style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8); color: white; padding: 20px; border-radius: 10px;
+            font-size: 20px; text-align: center;">
+  <p id="warningText">Return to the language selection screen in 5 seconds.</p>
+</div>
   </body>
 </html>
