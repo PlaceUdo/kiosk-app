@@ -62,6 +62,19 @@
             background-color: #e0e0e0;
             transform: scale(1.05);
         }
+
+        .language-grid-container { /* language-grid를 감싸는 컨테이너 */
+            display: flex;
+            justify-content: center; /* 가로 방향 가운데 정렬 */
+            align-items: center; /* 세로 방향 가운데 정렬 (필요한 경우) */
+            margin-top: 20px; /* 적절한 간격 조절 */
+        }
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
         .language-btn {
             background-color: #b0e57c;
             color: black;
@@ -118,15 +131,14 @@
 </head>
 <body>
 
-    <!-- 🔹 언어 선택 화면 -->
     <div id="languageScreen">
         <h1>플레이스우도</h1>
-        <div class="button-container">
-            <button class="language-btn" onclick="setLanguage('ko')">한국어</button>
+        <div class="language-grid-container">  <div class="language-grid">  <button class="language-btn" onclick="setLanguage('ko')">한국어</button>
             <button class="language-btn" onclick="setLanguage('zh')">中文</button>
             <button class="language-btn" onclick="setLanguage('en')">English</button>
             <button class="language-btn" onclick="setLanguage('jp')">日本語</button>
         </div>
+    </div>
     </div>
 
     <!-- 🔹 어두운 배경 -->
@@ -212,6 +224,5 @@ window.location.href = `menu-${selectedLanguage}.html`;
 
 }
     </script>
-
 </body>
 </html>
