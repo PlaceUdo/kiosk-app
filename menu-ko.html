@@ -147,8 +147,6 @@
                 height: auto;
             }
         }
-
-
     </style>
 
 </head>
@@ -187,27 +185,27 @@
             </div>
 
             <!-- Cart Section -->
-<div class="cart-container h-fit w-96 rounded-lg bg-white p-6 shadow-lg hidden"> 
-  <div class="mb-4 flex items-center gap-2">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
-      <path d="M2 3h2l2.5 12.5h12l2.5-12.5h2"></path>
-      <circle cx="10" cy="20" r="1"></circle>
-      <circle cx="18" cy="20" r="1"></circle>
-    </svg>
-    <h2 class="text-2xl font-bold">장바구니</h2>
-  </div>
-  <div id="cart-items" class="mb-4 space-y-4">
-    </div>
-  <div class="border-t pt-4">
-    <div class="border-t pt-4">
-      <div class="flex items-center justify-between font-bold">
-        <span>총 금액:</span>
-        <span id="total-price">₩0</span>
-      </div>
-      <button id="clear-cart" class="mt-4 w-full rounded-lg bg-red-500 py-2 font-bold text-white transition hover:bg-red-600">장바구니 초기화</button>
-    </div>
-  </div>
-</div>
+            <div class="cart-container h-fit w-96 rounded-lg bg-white p-6 shadow-lg hidden">
+                <div class="mb-4 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+                        <path d="M2 3h2l2.5 12.5h12l2.5-12.5h2"></path>
+                        <circle cx="10" cy="20" r="1"></circle>
+                        <circle cx="18" cy="20" r="1"></circle>
+                    </svg>
+                    <h2 class="text-2xl font-bold">장바구니</h2>
+                </div>
+                <div id="cart-items" class="mb-4 space-y-4">
+                </div>
+                <div class="border-t pt-4">
+                    <div class="border-t pt-4">
+                        <div class="flex items-center justify-between font-bold">
+                            <span>총 금액:</span>
+                            <span id="total-price">₩0</span>
+                        </div>
+                        <button id="clear-cart" class="mt-4 w-full rounded-lg bg-red-500 py-2 font-bold text-white transition hover:bg-red-600">장바구니 초기화</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script>
@@ -470,7 +468,7 @@
 
             hideTemperatureModal();
             updateCart();
-  showCart(); // 장바구니 표시
+            showCart(); // 장바구니 표시
         }
 
         // 장바구니 업데이트 함수 (로컬 스토리지 저장 추가)
@@ -549,9 +547,9 @@
                     });
                 }
                 updateCart();
-  if (cart.length === 0) { 
-    hideCart(); // 장바구니 숨기기
-  }
+                if (cart.length === 0) {
+                    hideCart(); // 장바구니 숨기기
+                }
             }
         }
 
@@ -613,75 +611,75 @@
             cart.length = 0; // 배열 비우기
             updateCart();
             localStorage.removeItem('cart'); // 로컬 스토리지에서도 삭제
-  hideCart(); // 장바구니 숨기기
+            hideCart(); // 장바구니 숨기기
         }
 
-function showCart() {
-  const cartContainer = document.querySelector('.cart-container'); //.cart-container 선택
-  cartContainer.classList.remove('hidden'); // hidden 클래스 제거
-}
+        function showCart() {
+            const cartContainer = document.querySelector('.cart-container'); //.cart-container 선택
+            cartContainer.classList.remove('hidden'); // hidden 클래스 제거
+        }
 
-function hideCart() {
-  const cartContainer = document.querySelector('.cart-container'); //.cart-container 선택
-  cartContainer.classList.add('hidden'); // hidden 클래스 추가
-}
+        function hideCart() {
+            const cartContainer = document.querySelector('.cart-container'); //.cart-container 선택
+            cartContainer.classList.add('hidden'); // hidden 클래스 추가
+        }
 
-let timeout;
-let warningTimeout;
-let warningDisplayed = false;
-let remainingTime = 5; // 5초 카운트다운
+        let timeout;
+        let warningTimeout;
+        let warningDisplayed = false;
+        let remainingTime = 5; // 5초 카운트다운
 
-function resetTimer() {
-    clearTimeout(timeout);
-    clearTimeout(warningTimeout);
+        function resetTimer() {
+            clearTimeout(timeout);
+            clearTimeout(warningTimeout);
 
-    if (warningDisplayed) {
-        hideWarningPopup(); 
-        warningDisplayed = false; 
-    }
-
-    // 25초 후 경고창 표시 + 카운트다운 시작
-    warningTimeout = setTimeout(() => {
-        showWarningPopup();
-    }, 25000); // 25초
-
-    // 30초 후 이동
-    timeout = setTimeout(() => {
-        window.location.href = "index.html"; // 이동할 페이지 (언어 선택 화면)
-    }, 30000); // 30초
-}
-
-function showWarningPopup() {
-    if (!warningDisplayed) {
-        warningDisplayed = true;
-        remainingTime = 5; // 5초부터 시작
-        document.getElementById("warningPopup").style.display = "block";
-
-        // 1초마다 updateWarningText 함수 호출
-        const countdownInterval = setInterval(() => {
-            document.getElementById("warningText").innerText = `${remainingTime} 초 후 언어 선택 화면으로 돌아갑니다.`;
-            remainingTime--;
-
-            if (remainingTime < 0) {
-                clearInterval(countdownInterval); // 카운트다운 종료
+            if (warningDisplayed) {
+                hideWarningPopup();
+                warningDisplayed = false;
             }
-        }, 1000);
-    }
-}
 
-function hideWarningPopup() {
-    document.getElementById("warningPopup").style.display = "none";
-}
+            // 25초 후 경고창 표시 + 카운트다운 시작
+            warningTimeout = setTimeout(() => {
+                showWarningPopup();
+            }, 25000); // 25초
 
-// 이벤트 리스너 추가 (터치, 클릭, 키 입력, 스크롤 시 타이머 리셋)
-window.addEventListener("mousemove", resetTimer);
-window.addEventListener("mousedown", resetTimer);
-window.addEventListener("keydown", resetTimer);
-window.addEventListener("touchstart", resetTimer);
-window.addEventListener("scroll", resetTimer); // 스크롤 이벤트 리스너 추가
+            // 30초 후 이동
+            timeout = setTimeout(() => {
+                window.location.href = "index.html"; // 이동할 페이지 (언어 선택 화면)
+            }, 30000); // 30초
+        }
 
-// 페이지 로드 시 타이머 시작
-window.addEventListener('DOMContentLoaded', resetTimer);
+        function showWarningPopup() {
+            if (!warningDisplayed) {
+                warningDisplayed = true;
+                remainingTime = 5; // 5초부터 시작
+                document.getElementById("warningPopup").style.display = "block";
+
+                // 1초마다 updateWarningText 함수 호출
+                const countdownInterval = setInterval(() => {
+                    document.getElementById("warningText").innerText = `${remainingTime} 초 후 언어 선택 화면으로 돌아갑니다.`;
+                    remainingTime--;
+
+                    if (remainingTime < 0) {
+                        clearInterval(countdownInterval); // 카운트다운 종료
+                    }
+                }, 1000);
+            }
+        }
+
+        function hideWarningPopup() {
+            document.getElementById("warningPopup").style.display = "none";
+        }
+
+        // 이벤트 리스너 추가 (터치, 클릭, 키 입력, 스크롤 시 타이머 리셋)
+        window.addEventListener("mousemove", resetTimer);
+        window.addEventListener("mousedown", resetTimer);
+        window.addEventListener("keydown", resetTimer);
+        window.addEventListener("touchstart", resetTimer);
+        window.addEventListener("scroll", resetTimer); // 스크롤 이벤트 리스너 추가
+
+        // 페이지 로드 시 타이머 시작
+        window.addEventListener('DOMContentLoaded', resetTimer);
     </script>
     <div id="warningPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(0, 0, 0, 0.8); color: white; padding: 20px; border-radius: 10px;
