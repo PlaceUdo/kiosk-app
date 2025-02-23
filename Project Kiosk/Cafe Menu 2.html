@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메뉴</title>
+    <!-- 기존 style 태그 제거하고 외부 CSS 파일 추가 -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="header">
+            <div class="header tabs">
+                <button class="header tab active" data-category="coffee">Coffee</button>
+                <button class="header tab" data-category="non-coffee">Non-coffee</button>
+                <button class="header tab" data-category="dessert">Dessert & Alcoholic</button>
+            </div>
+        </header>
+        <div id="menu-container"></div>
+    </div>
+
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <button id="close-popup">닫기</button>
+            <img src="" alt="" class="popup-image" id="popup-image">
+            <div class="popup-buttons">
+                <button class="hot-button">HOT</button>
+                <button class="ice-button">ICE</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- config.js, translations.js, menuItems.js 순서대로 추가 -->
+    <script src="js/config.js"></script>
+    <script src="js/translations.js"></script>
+    <script src="js/menuItems.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
