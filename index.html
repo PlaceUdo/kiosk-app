@@ -1,245 +1,236 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>키오스크</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-            transition: background-color 0.3s ease;
-        }
-        h1 {
-            font-size: 2em;
-        }
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-        button {
-            width: 200px;
-            padding: 15px;
-            font-size: 1.2em;
-            margin: 10px;
-            border: 1px solid #ccc;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #ddd;
-        }
-        .button-container.row {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            gap: 20px;
-        }
-        .option-button {
-            width: 180px;
-            height: 180px;
-            background-color: #f8f8f8;
-            border: 2px solid #ccc;
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            text-align: center;
-        }
-        .option-button img {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 10px;
-        }
-        .option-button:hover {
-            background-color: #e0e0e0;
-            transform: scale(1.05);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>음식 주문 시스템</title>
+  <script src="https://cdn.tailwindcss.com?version=3.4.16"></script>
+  <style>
+    * {
+      font-family: 'Gulim', '굴림', sans-serif;
+      font-weight: bold;
+    }
 
-        .language-grid-container { /* language-grid를 감싸는 컨테이너 */
-            display: flex;
-            justify-content: center; /* 가로 방향 가운데 정렬 */
-            align-items: center; /* 세로 방향 가운데 정렬 (필요한 경우) */
-            margin-top: 20px; /* 적절한 간격 조절 */
-        }
-        .language-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
+    #menu-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 80vh;
+      gap: 1rem; /* 간격 수정: 1rem -> 2rem */
+      overflow: hidden;
+      padding: 1rem 2rem;
+      line-height: 1.5;
+      cursor: pointer;
+    }
 
-        .language-btn {
-            background-color: #b0e57c;
-            color: black;
-            border: 1px solid #8cbf5c;
-            font-weight: bold;
-        }
-        .language-btn:hover {
-            background-color: #98d46c;
-        }
-        #orderScreen {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            z-index: 10;
-        }
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 5;
-        }
-        #takeoutWarningPopup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            z-index: 20;
-        }
-        #takeoutWarningPopup button {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #ff5555;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-    </style>
+    .menu-item {
+      width: 30vw;
+      height: 30vh; /* 높이 수정: 20vh -> 30vh */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-item img {
+      max-width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .menu-item p {
+      text-align: center;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .menu-item p:nth-child(2) {
+      margin-bottom: 5px;
+    }
+
+    .language-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .language-btn {
+      width:125px;
+      padding: 0.5rem 1rem;
+      border: 2px solid #ddd;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .language-btn.active {
+      background-color: #4A5568;
+      color: white;
+      border-color: #4A5568;
+    }
+
+    @media (max-width: 768px) {
+      #menu-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .menu-item {
+        width: 80vw;
+        height: 20vh;
+      }
+
+      .menu-item p {
+        font-size: 0.9rem;
+      }
+
+      .language-buttons {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
 </head>
-<body>
+<body class="container mx-auto p-4">
+  <h1 class="text-2xl font-bold mb-4 text-center">플레이스 우도</h1>
 
-    <div id="languageScreen">
-        <h1>플레이스우도</h1>
-        <div class="language-grid-container">  <div class="language-grid">  <button class="language-btn" onclick="setLanguage('ko')">한국어</button>
-            <button class="language-btn" onclick="setLanguage('zh')">中文</button>
-            <button class="language-btn" onclick="setLanguage('en')">English</button>
-            <button class="language-btn" onclick="setLanguage('jp')">日本語</button>
-            <button class="language-btn" onclick="setLanguage('test')">test</button>
-            <button class="language-btn" onclick="setLanguage('test2')">test2</button>
-            <button class="language-btn" onclick="setLanguage('test3')">test3</button>
-        </div>
-    </div>
-    </div>
+  <div class="language-buttons">
+    <button class="language-btn active" data-lang="ko">한국어</button>
+    <button class="language-btn" data-lang="en">English</button>
+    <button class="language-btn" data-lang="zh">中文</button>
+    <button class="language-btn" data-lang="ja">日本語</button>
+  </div>
+  <div class="menu-grid w-full" id="menu-container"></div>
+  <div id="content-area"></div>
 
-    <!-- 🔹 어두운 배경 -->
-    <div id="overlay" onclick="closeOrderScreen()"></div>
+  <h1 id="page-title"></h1>
+  <p id="page-content"></p>
 
-    <!-- 🔹 매장/포장 선택 화면 -->
-    <div id="orderScreen">
-        <h1>이용 방법을 선택하세요</h1>
-        <div class="button-container row">
-<button id="store-btn" class="option-button" onclick="selectOption('store')">
-    <img src="images/store.png" alt="매장">
-    매장
-</button>
-<button id="takeout-btn" class="option-button" onclick="selectOption('takeout')">
-    <img src="images/takeout.png" alt="포장">
-    포장
-</button>
-
-        </div>
-    </div>
-
-<!-- 🔹 포장 경고 팝업 -->
-<div id="takeoutWarningPopup">
-    <p id="warningMessage"></p>
-    <button id="agreeButton" onclick="closeWarningPopup()"></button>
-</div>
-
-    <script>
+  <script>
     const translations = {
-        ko: { store: "매장", takeout: "포장", warning: "포장을 선택하시면, 매장에서는 드실 수 없습니다.\n죄송하지만, 나가주셔야 합니다.", agree: "동의" },
-        en: { store: "Dine-In", takeout: "Takeout", warning: "If you choose takeout, you cannot eat inside.\nSorry, but you must leave.", agree: "Agree" },
-        zh: { store: "堂食", takeout: "外带", warning: "如果选择外带，就不能在店内用餐。\n很抱歉，您需要离开。", agree: "同意" },
-        jp: { store: "店内", takeout: "持ち帰り", warning: "持ち帰りを選択すると、店内では食べられません。\n申し訳ありませんが、退店してください。", agree: "同意" },
-        test: { store: "매장", takeout: "포장", warning: "포장을 선택하시면, 매장에서는 드실 수 없습니다.\n죄송하지만, 나가주셔야 합니다.", agree: "동의" },
-        test2: { store: "매장", takeout: "포장", warning: "포장을 선택하시면, 매장에서는 드실 수 없습니다.\n죄송하지만, 나가주셔야 합니다.", agree: "동의" },
-        test3: { store: "매장", takeout: "포장", warning: "포장을 선택하시면, 매장에서는 드실 수 없습니다.\n죄송하지만, 나가주셔야 합니다.", agree: "동의" },
+      ko: {
+        title: "",
+        menu: {
+          "Coffee": "커피",
+          "Non-coffee": "Non-커피",
+          "Dessert & Alcoholic beverage": "디저트 & 주류"
+        }
+      },
+      en: {
+        title: "",
+        menu: {
+          "Coffee": "Coffee",
+          "Non-coffee": "Non-coffee",
+          "Dessert & Alcoholic beverage": "Dessert & Alcoholic beverage"
+        }
+      },
+      zh: {
+        title: "",
+        menu: {
+          "Coffee": "咖啡",
+          "Non-coffee": "非咖啡",
+          "Dessert & Alcoholic beverage": "甜点 & 酒精饮料"
+        }
+      },
+      ja: {
+        title: "",
+        menu: {
+          "Coffee": "コーヒー",
+          "Non-coffee": "ノンコーヒー",
+          "Dessert & Alcoholic beverage": "デザート & アルコール"
+        }
+      }
     };
 
-    let selectedLanguage = "ko"; // 기본 언어
+    const menuItems = [
+      {name: "Coffee", url: "New/Cafe Menu.html"},
+      {name: "Non-coffee", url: "New/Cafe Menu.html"},
+      {name: "Dessert & Alcoholic beverage", url: "Cafe Menu.html"}
+    ];
 
-    function setLanguage(lang) {
-        selectedLanguage = lang;
-        updatePopupText();
-        document.getElementById("orderScreen").style.display = "block";
-        document.getElementById("overlay").style.display = "block";
+    let currentLang = 'ko';
+
+    function updateLanguage(lang) {
+      currentLang = lang;
+
+      // 제목 업데이트
+      document.getElementById('page-title').textContent = translations[lang].title; // page-title 업데이트
+      document.getElementById('page-content').textContent = translations[lang].content; // page-content 업데이트
+
+      // 메뉴 아이템 업데이트
+      updateMenuItems();
+
+      // 언어 버튼 활성화 상태 업데이트
+      document.querySelectorAll('.language-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
     }
 
-    function updatePopupText() {
-        document.getElementById("store-btn").innerHTML = `<img src="images/store.png" alt="매장"> ${translations[selectedLanguage].store}`;
-        document.getElementById("takeout-btn").innerHTML = `<img src="images/takeout.png" alt="포장"> ${translations[selectedLanguage].takeout}`;
+    function createMenuItem(item) {
+  const menuItem = document.createElement('div');
+  menuItem.className = 'border p-4 rounded menu-item';
+  menuItem.innerHTML = `
+    <div class="flex flex-col items-center">
+      <p>${translations[currentLang].menu[item.name]}</p>
+    </div>
+  `;
+  menuItem.onclick = () => {
+    // URL에 언어와 카테고리 정보를 모두 포함
+    const category = item.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
+    window.open(`${item.url}?lang=${currentLang}&category=${category}`, '_blank');
+  };
+  return menuItem;
+}
 
-        // 🔹 경고 메시지 및 버튼 업데이트
-        document.getElementById("warningMessage").textContent = translations[selectedLanguage].warning;
-        document.getElementById("agreeButton").textContent = translations[selectedLanguage].agree;
+    function updateMenuItems() {
+      const menuContainer = document.getElementById('menu-container');
+      menuContainer.innerHTML = ''; // 기존 메뉴 아이템 삭제
+      menuItems.forEach(item => {
+        const menuItem = createMenuItem(item);
+        menuContainer.appendChild(menuItem);
+      });
     }
 
-function selectOption(option) {
-    const selectedOption = translations[selectedLanguage][option];
+    window.addEventListener('DOMContentLoaded', (event) => {
+      // 언어 버튼에 이벤트 리스너 추가
+      document.querySelectorAll('.language-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          updateLanguage(btn.dataset.lang);
+        });
+      });
 
-    if (selectedOption === translations[selectedLanguage].takeout) {
-        document.getElementById("warningMessage").textContent = translations[selectedLanguage].warning;
-        document.getElementById("takeoutWarningPopup").style.display = "block";
-        document.getElementById("overlay").style.display = "block"; // 🔹 오버레이 활성화
-        document.body.style.pointerEvents = "none"; // 🔹 모든 클릭 차단
-        document.getElementById("takeoutWarningPopup").style.pointerEvents = "auto"; // 🔹 경고창만 클릭 가능
-    } else {
-        goToMenu(); // 매장을 선택하면 바로 메뉴 페이지로 이동
-    }
-}
+      // 초기 메뉴 아이템 생성
+      updateMenuItems();
 
-function closeOrderScreen() {
-    document.getElementById("orderScreen").style.display = "none";
-    document.getElementById("overlay").style.display = "none";
-    document.body.style.pointerEvents = "auto"; // 🔹 클릭 다시 활성화
-}
+      // URL 매개변수 확인 및 언어 설정
+      const urlParams = new URLSearchParams(window.location.search);
+      const lang = urlParams.get('lang') || 'ko'; // 언어 정보 가져오기, 없으면 기본값 'ko'
+      updateLanguage(lang); // 번역 함수 호출
+    });
 
-
-function closeWarningPopup() {
-    document.getElementById("takeoutWarningPopup").style.display = "none";
-    document.getElementById("overlay").style.display = "none"; // 🔹 오버레이 해제
-    document.body.style.pointerEvents = "auto"; // 🔹 클릭 다시 활성화
-    goToMenu(); // 🔹 포장 확인 후 메뉴 페이지로 이동
-}
-function goToMenu() {
-    // 메뉴 페이지 이동 전에 localStorage에 플래그 설정
-    localStorage.setItem('menuReturn', 'true');
-    window.location.href = `menu-${selectedLanguage}.html`;
-}
-
-// 페이지 로드 시
-window.addEventListener('DOMContentLoaded', function() {
-    // localStorage에 menuReturn 플래그가 설정되어 있는지 확인
-    if (localStorage.getItem('menuReturn') === 'true') {
-        // 설정되어 있다면 페이지 새로고침
-        localStorage.removeItem('menuReturn'); // 플래그 제거
-        window.location.reload();
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    // URL에서 언어와 카테고리 파라미터 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const lang = urlParams.get('lang') || 'ko';
+    const category = urlParams.get('category') || 'coffee';
+    
+    // 언어 업데이트
+    updateLanguage(lang);
+    
+    // 해당 카테고리 탭 활성화 및 컨텐츠 표시
+    const tabs = document.querySelectorAll('.header.tab');
+    tabs.forEach(tab => {
+        if (tab.dataset.category === category) {
+            // 이전 활성 탭 비활성화
+            document.querySelector('.header.tab.active')?.classList.remove('active');
+            // 현재 탭 활성화
+            tab.classList.add('active');
+            // 해당 카테고리 메뉴 표시
+            updateMenuItems(category);
+        }
+    });
 });
-    </script>
+  </script>
 </body>
 </html>
