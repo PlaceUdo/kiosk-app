@@ -25,17 +25,17 @@
     }
 
   .menu-item {
-        height: 27vh;
+        height: 28vh;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-  .menu-item img {
-        max-width: 100%;
-        height: auto;
-        object-fit: cover;
-    }
+.menu-item img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain; /* 또는 contain */
+}
 
   .menu-item p {
         text-align: center;
@@ -166,7 +166,7 @@
       {name: "카페모카", price: 7000, image: "images/CaffeMocha.png", availableOptions: ["ice", "hot"], soldOut: false},
       {name: "우도땅콩 크림라떼", price: 7000, image: "images/UdoPeanutCreamLatte.png", availableOptions: ["ice", "hot"], soldOut: false},
       {name: "흑임자크림라떼", price: 7000, image: "images/BlackSesameCreamLatte.png", availableOptions: ["ice"], soldOut: false},
-      {name: "우도땅콩<br>아이스크림라떼", price: 7000, image: "images/UdoPeanutIceCreamLatte.png", availableOptions: ["ice"], soldOut: false},
+      {name: "우도땅콩아이스크림라떼", price: 7000, image: "images/UdoPeanutIceCreamLatte.png", availableOptions: ["ice"], soldOut: false},
       {name: "우도땅콩 아포카토", price: 7000, image: "images/UdoPeanutAffogato.png", availableOptions: ["ice"], soldOut: false},
       {name: "에스프레소", price: 7000, image: "images/Espresso.png", availableOptions: ["ice"], soldOut: false}
     ];
@@ -215,8 +215,8 @@
       const img = document.createElement('img');
       img.src = item.image;
       img.alt = item.name; // alt 속성에 메뉴 이름 추가
-      img.width = 225;
-      img.height = 225;
+      img.width = 175;
+      img.height = 175;
       img.className = "object-cover";
 
       img.onerror = () => {
