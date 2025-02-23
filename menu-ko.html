@@ -1,691 +1,132 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>음식 주문 시스템</title>
-    <script src="https://cdn.tailwindcss.com?version=3.4.16"></script>
-    <style>
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 50;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>음식 주문 시스템</title>
+  <script src="https://cdn.tailwindcss.com?version=3.4.16"></script>
+  <style>
+    * {
+      font-family: 'Gulim', '굴림', sans-serif;
+    }
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 100;
-            width: 300px;
-            /* 팝업 너비 */
-            height: 200px;
-            /* 팝업 높이 */
-            padding: 20px;
-            /* 내부 여백 */
-            background: white;
-            border-radius: 10px;
-            text-align: center;
-            /* 텍스트 중앙 정렬 */
-            display: flex;
-            flex-direction: column;
-            /* 세로 정렬 */
-            justify-content: center;
-            /* 세로 중앙 정렬 */
-            align-items: center;
-            /* 가로 중앙 정렬 */
-        }
+    * {
+      font-weight: bold;
+    }
 
-        .hot-item {
-            background-color: rgba(239, 68, 68, 0.40);
-        }
+    #menu-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      gap: 1rem;
+      overflow: hidden;
+      padding: 1rem 2rem;
+      line-height: 1.5;
+      cursor: pointer;
+    }
 
-        .ice-item {
-            background-color: rgba(59, 130, 246, 0.40);
-        }
+    .menu-item {
+      width: 40vw;
+      height: 20vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .popup {
-            width: 500px;
-            min-height: 500px;
-        }
+  .menu-item img {
+      max-width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 20px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
+  .menu-item p {
+      text-align: center;
+      /* 추가된 스타일 */
+      font-size: 1rem;
+      line-height: 1.5;
+    }
 
-        #drinkImage {
-            max-width: 400px;
-            border-radius: 10px;
-        }
+  .menu-item p:nth-child(2) {
+      margin-bottom: 5px;
+    }
 
-        /* 기존 overlay 스타일 */
-        #modalOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            /* 배경을 어둡게 하되 팝업이 영향을 받지 않도록 조정 */
-            display: none;
-            z-index: 999;
-        }
+    @media (max-width: 768px) {
+      #menu-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
 
-        /* 팝업 창 스타일 */
-        #temperatureModal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: pink;
-            padding: 20px;
-            border-radius: 10px;
-            z-index: 1000;
-            width: 400px;
-            max-width: 90%;
-            min-height: 350px;
-            /* 최소 높이 유지 */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+@media (max-width: 480px) {
+  .menu-item {
+    width: 80vw; /* 화면 너비의 80% */
+    height: 20vh; /* 화면 높이의 20% */
+  }
+}
 
-        /* 버튼 컨테이너 */
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            /* 버튼을 아래쪽으로 밀기 */
-        }
+    .menu-item p {
+        font-size: 0.9rem;
+      }
+    }
 
-        /* 개별 버튼 스타일 */
-        .hot-button,
-        .ice-button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
+  .menu-item p:nth-child(2) {
+      /* 두 번째 <p> 태그 (메뉴 이름) 선택 */
+      font-weight: bold;
+      /* 굵게 표시 */
+      margin-bottom: 5px;
+      /* 가격과의 간격 추가 */
+    }
 
-        .hot-button {
-            background-color: red;
-            color: white;
-        }
-
-        .ice-button {
-            background-color: blue;
-            color: white;
-        }
-
-        /* 📱 모바일 최적화 */
-        @media (max-width: 768px) {
-            .popup {
-                width: 90%;
-                min-height: 400px;
-            }
-
-            .popup-image {
-                width: 80%;
-                height: auto;
-            }
-        }
-    </style>
-
+  .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 
-<body class="min-h-screen bg-gray-100 p-8">
-    <!-- Modal Overlay -->
-    <div id="modalOverlay" class="modal-overlay"></div>
+<body class="container mx-auto p-4">
+  <h1 class="text-2xl font-bold mb-4 text-center">Coffee</h1>
 
-    <!-- Temperature Selection Modal -->
-    <div id="temperatureModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-white p-6 rounded-lg flex flex-col items-center">
-            <!-- 온도 선택 안내 이미지 (음료 이미지) -->
-            <img id="drinkImage" src="images/default-drink.png" alt="선택한 음료 이미지" class="popup-image">
+  <div class="menu-grid w-full" id="menu-container"></div>
+  <div id="content-area"></div>
 
-            <!-- 온도 선택 버튼 -->
-            <div class="flex gap-4">
-                <button id="hotButton" class="py-3 px-6 rounded-lg bg-red-500 text-white font-bold hover:bg-red-600 transition-colors">
-                    HOT
-                </button>
+  <script>
+    const menuItems = [
+      {name: "Coffee", url: "menu-test.html"},
+      {name: "Non-coffee", url: "menu-test2.html"},
+      {name: "Dessert & Alcoholic beverage", url: "menu-test3.html"}
+    ];
 
-                <button id="iceButton" class="py-3 px-6 rounded-lg bg-blue-500 text-white font-bold hover:bg-blue-600 transition-colors">
-                    ICE
-                </button>
-            </div>
-        </div>
-    </div>
+    window.addEventListener('DOMContentLoaded', (event) => {
+      const menuContainer = document.getElementById('menu-container');
 
-    <div class="mx-auto max-w-6xl">
-        <div class="flex gap-8">
-            <!-- Menu Section -->
-            <div class="flex-1">
-                <h2 class="mb-4 text-2xl font-bold">메뉴</h2>
-                <div id="menu-container" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    <!-- Menu items will be inserted here -->
+      menuItems.forEach(item => {
+        const menuItem = createMenuItem(item);
+        menuContainer.appendChild(menuItem);
+      });
+    });
+
+    function createMenuItem(item) {
+      const menuItem = document.createElement('div');
+      menuItem.className = 'border p-4 rounded menu-item';
+
+      menuItem.innerHTML = `
+                <div class="flex flex-col items-center">
+                    <p>${item.name}</p>
                 </div>
-            </div>
+            `;
 
-            <!-- Cart Section -->
-            <div class="cart-container h-fit w-96 rounded-lg bg-white p-6 shadow-lg hidden">
-                <div class="mb-4 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
-                        <path d="M2 3h2l2.5 12.5h12l2.5-12.5h2"></path>
-                        <circle cx="10" cy="20" r="1"></circle>
-                        <circle cx="18" cy="20" r="1"></circle>
-                    </svg>
-                    <h2 class="text-2xl font-bold">장바구니</h2>
-                </div>
-                <div id="cart-items" class="mb-4 space-y-4">
-                </div>
-                <div class="border-t pt-4">
-                    <div class="border-t pt-4">
-                        <div class="flex items-center justify-between font-bold">
-                            <span>총 금액:</span>
-                            <span id="total-price">₩0</span>
-                        </div>
-                        <button id="clear-cart" class="mt-4 w-full rounded-lg bg-red-500 py-2 font-bold text-white transition hover:bg-red-600">장바구니 초기화</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        console.log("페이지 로드됨");
-        const menuItems = [{
-                name: "아메리카노",
-                price: 6000,
-                hasTemperature: true,
-                image: "images/Americano.jpg"
-            },
-            {
-                name: "카페라떼",
-                price: 6500,
-                hasTemperature: true,
-                image: "images/CaffeLatte.jpg"
-            },
-            {
-                name: "바닐라라떼",
-                price: 7000,
-                hasTemperature: true,
-                image: "images/VanillaLatte.jpg"
-            },
-            {
-                name: "카페모카",
-                price: 7000,
-                hasTemperature: true,
-                image: "images/CaffeMocha.jpg"
-            },
-            {
-                name: "우도땅콩크림라떼",
-                price: 8500,
-                hasTemperature: true,
-                image: "images/UdoPeanutCreamLatte.jpg"
-            },
-            {
-                name: "흑임자크림라떼",
-                price: 8500,
-                hasTemperature: true,
-                image: "images/BlackSesameCreamLatte.jpg"
-            },
-            {
-                name: "우도땅콩아이스크림라떼",
-                price: 9000,
-                hasTemperature: true,
-                onlyIce: true,
-                image: "images/UdoPeanutIceCreamLatte.jpg"
-            }, // ICE만 가능
-            {
-                name: "우도땅콩아포카토",
-                price: 9000,
-                hasTemperature: true,
-                onlyIce: true,
-                image: "images/UdoPeanutAffogato.jpg"
-            }, // ICE만 가능
-            {
-                name: "에스프레소",
-                price: 5000,
-                hasTemperature: true,
-                onlyHot: true,
-                image: "images/Espresso.jpg"
-            }, // HOT만 가능
-            {
-                name: "캐모마일",
-                price: 6000,
-                hasTemperature: true,
-                image: "images/ChamomileTea.jpg"
-            },
-            {
-                name: "청귤차",
-                price: 6000,
-                hasTemperature: true,
-                image: "images/GreenTangerineTea.jpg"
-            },
-            {
-                name: "한라봉차",
-                price: 6000,
-                hasTemperature: true,
-                image: "images/HallabongTea.jpg"
-            },
-            {
-                name: "초코라떼",
-                price: 7000,
-                hasTemperature: true,
-                image: "images/ChocolateLatte.jpg"
-            },
-            {
-                name: "녹차라떼",
-                price: 7000,
-                hasTemperature: true,
-                image: "images/GreenTeaLatte.jpg"
-            },
-            {
-                name: "청귤에이드",
-                price: 7000,
-                hasTemperature: true,
-                onlyIce: true,
-                image: "images/GreenTangerineAde.jpg"
-            }, // ICE만 가능
-            {
-                name: "한라봉에이드",
-                price: 7000,
-                hasTemperature: true,
-                onlyIce: true,
-                image: "images/HallabongAde.jpg"
-            }, // ICE만 가능
-            {
-                name: "블루레몬에이드",
-                price: 7000,
-                hasTemperature: true,
-                onlyIce: true,
-                image: "images/BlueLemonAde.jpg"
-            }, // ICE만 가능
-            {
-                name: "우도땅콩아이스크림",
-                price: 5000,
-                hasTemperature: true,
-                onlyIce: true,
-                image: "images/UdoPeanutIceCream.jpg"
-            }, // ICE만 가능
-            {
-                name: "우도땅콩아이스크림과<br>크로플",
-                price: 10000,
-                hasTemperature: true,
-                onlyIce: true,
-                image: "images/UdoPeanutIceCreamCroffle.jpg"
-            }, // ICE만 가능
-            {
-                name: "1664 블랑",
-                price: 8000,
-                hasTemperature: true,
-                onlyIce: true,
-                image: "images/1664Blanc.jpg"
-            }, // ICE만 가능
-            {
-                name: "빅 웨이브",
-                price: 9000,
-                hasTemperature: true,
-                onlyIce: true,
-                image: "images/BigWave.jpg"
-            }, // ICE만 가능
-            {
-                name: "코로나",
-                price: 7000,
-                hasTemperature: true,
-                onlyIce: true,
-                image: "images/Corona.jpg"
-            }, // ICE만 가능
-            {
-                name: "켈리",
-                price: 5000,
-                hasTemperature: true,
-                onlyIce: true,
-                image: "images/Kelly.jpg"
-            }, // ICE만 가능
-        ];
+      menuItem.onclick = () => {
+        window.open(item.url, '_blank');
+      };
 
-        const cart = [];
-        const menuContainer = document.getElementById('menu-container');
-        const cartItemsContainer = document.getElementById('cart-items');
-        const totalPriceElement = document.getElementById('total-price');
-        const modalOverlay = document.getElementById('modalOverlay');
-        const temperatureModal = document.getElementById('temperatureModal');
-        let selectedMenuIndex = null;
-
-        function formatPrice(price) {
-            return `₩${price.toLocaleString()}`;
-        }
-
-        function formatMenuName(name) {
-            return name.replace(/\n/g, '<br>');
-        }
-
-        function showTemperatureModal(index) {
-            if (index === undefined || index === null || index < 0) {
-                console.error("showTemperatureModal 오류: index 값이 올바르지 않습니다.", index);
-                return;
-            }
-
-            selectedMenuIndex = index;
-            const menuItem = menuItems[index];
-
-            // 🔹 메뉴명과 이미지 매핑 객체
-            const drinkImages = {
-                "아메리카노": "images/Americano.jpg",
-                "카페라떼": "images/CaffeLatte.jpg",
-                "바닐라라떼": "images/VanillaLatte.jpg",
-                "카페모카": "images/CaffeMocha.jpg",
-                "우도땅콩크림라떼": "images/UdoPeanutCreamLatte.jpg",
-                "흑임자크림라떼": "images/BlackSesameCreamLatte.jpg",
-                "우도땅콩아이스크림라떼": "images/UdoPeanutIceCreamLatte.jpg",
-                "우도땅콩아포카토": "images/UdoPeanutAffogato.jpg",
-                "에스프레소": "images/Espresso.jpg",
-                "캐모마일": "images/ChamomileTea.jpg",
-                "청귤차": "images/GreenTangerineTea.jpg",
-                "한라봉차": "images/HallabongTea.jpg",
-                "초코라떼": "images/ChocolateLatte.jpg",
-                "녹차라떼": "images/GreenTeaLatte.jpg",
-                "청귤에이드": "images/GreenTangerineAde.jpg",
-                "한라봉에이드": "images/HallabongAde.jpg",
-                "블루레몬에이드": "images/BlueLemonAde.jpg",
-                "우도땅콩아이스크림": "images/UdoPeanutIceCream.jpg",
-                "우도땅콩아이스크림과크로플": "images/UdoPeanutIceCreamCroffle.jpg",
-                "1664 블랑": "images/1664Blanc.jpg",
-                "빅 웨이브": "images/BigWave.jpg",
-                "코로나": "images/Corona.jpg",
-                "켈리": "images/Kelly.jpg",
-            };
-
-            // 🔹 선택한 메뉴에 따라 이미지 변경
-            const drinkImage = document.getElementById("drinkImage");
-
-            // 메뉴 이름이 객체에 있으면 해당 이미지 사용, 없으면 기본 이미지 사용
-            drinkImage.src = drinkImages[menuItem.name] || "images/default-drink.png";
-
-            // 모달 표시
-            modalOverlay.style.display = 'block';
-            temperatureModal.style.display = 'flex';
-            // 온도 선택 버튼 제어
-            if (menuItem.onlyIce) {
-                document.getElementById('hotButton').style.display = 'none'; // HOT 버튼 숨김
-                document.getElementById('iceButton').style.display = 'block'; // ICE 버튼 보임
-            } else if (menuItem.onlyHot) {
-                document.getElementById('hotButton').style.display = 'block'; // HOT 버튼 보임
-                document.getElementById('iceButton').style.display = 'none'; // ICE 버튼 숨김
-            } else {
-                document.getElementById('hotButton').style.display = 'block'; // 둘 다 보이도록 설정
-                document.getElementById('iceButton').style.display = 'block';
-            }
-        }
-
-        function hideTemperatureModal() {
-            document.getElementById("modalOverlay").style.display = 'none';
-            document.getElementById("temperatureModal").style.display = 'none';
-            selectedMenuIndex = null;
-        }
-
-        function hideTemperatureModal() {
-            modalOverlay.style.display = 'none';
-            temperatureModal.style.display = 'none';
-            selectedMenuIndex = null;
-        }
-
-        function addToCartWithTemperature(temperature) {
-            if (selectedMenuIndex === null) return;
-
-            const menuItem = menuItems[selectedMenuIndex];
-            const itemName = `${menuItem.name} (${temperature})`;
-            const existingItemIndex = cart.findIndex(item => item.name === itemName);
-
-            if (existingItemIndex >= 0) {
-                cart[existingItemIndex].quantity += 1;
-            } else {
-                cart.push({
-                    ...menuItem,
-                    name: itemName,
-                    quantity: 1,
-                    temperature
-                });
-            }
-
-            hideTemperatureModal();
-            updateCart();
-            showCart(); // 장바구니 표시
-        }
-
-        // 장바구니 업데이트 함수 (로컬 스토리지 저장 추가)
-        function updateCart() {
-            cartItemsContainer.innerHTML = '';
-            if (cart.length === 0) {
-                cartItemsContainer.innerHTML = '<p class="text-gray-500 text-center py-4">장바구니가 비었습니다.</p>';
-                totalPriceElement.textContent = '₩0';
-                localStorage.removeItem('cart'); // 장바구니가 비었으면 로컬 스토리지에서도 삭제
-                return;
-            }
-
-            let total = 0;
-            cart.forEach((item, index) => {
-                const itemDiv = document.createElement('div');
-                const temperatureClass = item.temperature === 'HOT' ? 'hot-item' : item.temperature === 'ICE' ? 'ice-item' : '';
-                itemDiv.className = `flex items-center justify-between p-3 rounded-lg ${temperatureClass}`;
-                itemDiv.innerHTML = `
-                  <div>
-                      <div class="font-medium">${formatMenuName(item.name)}</div>
-                      <div class="text-sm text-gray-600">${formatPrice(item.price)}</div>
-                  </div>
-                  <div class="flex items-center gap-2">
-                      <button onclick="changeQuantity(${index}, -1)"
-                              class="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200">
-                          -
-                      </button>
-                      <span class="w-8 text-center">${item.quantity}</span>
-                      <button onclick="changeQuantity(${index}, 1)"
-                              class="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200">
-                          +
-                      </button>
-                  </div>
-              `;
-                cartItemsContainer.appendChild(itemDiv);
-                total += item.price * item.quantity;
-            });
-
-            totalPriceElement.textContent = formatPrice(total);
-            localStorage.setItem('cart', JSON.stringify(cart)); // 장바구니 정보 저장
-        }
-
-        // 페이지 로드 시 로컬 스토리지에서 장바구니 데이터 불러오기
-        document.addEventListener("DOMContentLoaded", function() {
-            const savedCart = localStorage.getItem('cart');
-            if (savedCart) {
-                cart.push(...JSON.parse(savedCart)); // 기존 장바구니 데이터 복구
-                updateCart();
-            }
-
-            // 장바구니 초기화 버튼 이벤트 리스너 추가
-            const clearCartBtn = document.getElementById("clear-cart");
-            if (clearCartBtn) {
-                clearCartBtn.addEventListener("click", clearCart);
-            }
-            document.addEventListener("DOMContentLoaded", function() {
-                const image = document.querySelector(".popup-image");
-                image.style.width = "350px";
-                image.style.height = "450px";
-            });
-        });
-
-        function addToCart(index) {
-            console.log("선택된 메뉴: ", menuItems[index].name);
-            if (menuItems[index].hasTemperature) {
-                console.log("온도 선택 필요: ", menuItems[index].name);
-                showTemperatureModal(index);
-            } else {
-                const existingItemIndex = cart.findIndex(item => item.name === menuItems[index].name);
-                if (existingItemIndex >= 0) {
-                    cart[existingItemIndex].quantity += 1;
-                } else {
-                    cart.push({
-                        ...menuItems[index],
-                        quantity: 1
-                    });
-                }
-                updateCart();
-                if (cart.length === 0) {
-                    hideCart(); // 장바구니 숨기기
-                }
-            }
-        }
-
-        function changeQuantity(index, amount) {
-            const newQuantity = cart[index].quantity + amount;
-            if (newQuantity <= 0) {
-                cart.splice(index, 1);
-            } else {
-                cart[index].quantity = newQuantity;
-            }
-            updateCart();
-        }
-
-        // Initialize menu
-        menuItems.forEach((item, index) => {
-            const menuItemButton = document.createElement('button');
-            menuItemButton.className = 'bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow';
-            menuItemButton.onclick = () => addToCart(index);
-            menuItemButton.innerHTML = `
-                      <div class="font-medium">${formatMenuName(item.name)}</div>
-      <div style="height: 5px;"></div>
-                      <div class="text-gray-600">${formatPrice(item.price)}</div>
-                  `;
-            menuContainer.appendChild(menuItemButton);
-        });
-
-        // Set up temperature selection handlers
-        document.getElementById('hotButton').onclick = () => addToCartWithTemperature('HOT');
-        document.getElementById('iceButton').onclick = () => addToCartWithTemperature('ICE');
-        modalOverlay.onclick = hideTemperatureModal;
-
-        // Initial cart render
-        updateCart();
-        document.addEventListener("DOMContentLoaded", function() {
-            const clearCartBtn = document.getElementById("clear-cart");
-            if (clearCartBtn) {
-                clearCartBtn.addEventListener("click", clearCart);
-            } else {
-                console.error("clear-cart 요소를 찾을 수 없습니다.");
-            }
-        });
-
-        modalOverlay.style.display = 'none';
-        temperatureModal.style.display = 'none';
-        document.getElementById('clear-cart').addEventListener('click', function() {
-            // 장바구니 항목 삭제
-            document.getElementById('cart-items').innerHTML = '';
-
-            // 총 금액 초기화
-            document.getElementById('total-price').textContent = '₩0';
-
-            // 로컬 스토리지에서도 삭제 (만약 사용 중이라면)
-            localStorage.removeItem('cart');
-
-        });
-        // 장바구니 비우기 함수
-        function clearCart() {
-            console.log("장바구니 초기화");
-            cart.length = 0; // 배열 비우기
-            updateCart();
-            localStorage.removeItem('cart'); // 로컬 스토리지에서도 삭제
-            hideCart(); // 장바구니 숨기기
-        }
-
-        function showCart() {
-            const cartContainer = document.querySelector('.cart-container'); //.cart-container 선택
-            cartContainer.classList.remove('hidden'); // hidden 클래스 제거
-        }
-
-        function hideCart() {
-            const cartContainer = document.querySelector('.cart-container'); //.cart-container 선택
-            cartContainer.classList.add('hidden'); // hidden 클래스 추가
-        }
-
-        let timeout;
-        let warningTimeout;
-        let warningDisplayed = false;
-        let remainingTime = 5; // 5초 카운트다운
-
-        function resetTimer() {
-            clearTimeout(timeout);
-            clearTimeout(warningTimeout);
-
-            if (warningDisplayed) {
-                hideWarningPopup();
-                warningDisplayed = false;
-            }
-
-            // 25초 후 경고창 표시 + 카운트다운 시작
-            warningTimeout = setTimeout(() => {
-                showWarningPopup();
-            }, 25000); // 25초
-
-            // 30초 후 이동
-            timeout = setTimeout(() => {
-                window.location.href = "index.html"; // 이동할 페이지 (언어 선택 화면)
-            }, 30000); // 30초
-        }
-
-        function showWarningPopup() {
-            if (!warningDisplayed) {
-                warningDisplayed = true;
-                remainingTime = 5; // 5초부터 시작
-                document.getElementById("warningPopup").style.display = "block";
-
-                // 1초마다 updateWarningText 함수 호출
-                const countdownInterval = setInterval(() => {
-                    document.getElementById("warningText").innerText = `${remainingTime} 초 후 언어 선택 화면으로 돌아갑니다.`;
-                    remainingTime--;
-
-                    if (remainingTime < 0) {
-                        clearInterval(countdownInterval); // 카운트다운 종료
-                    }
-                }, 1000);
-            }
-        }
-
-        function hideWarningPopup() {
-            document.getElementById("warningPopup").style.display = "none";
-        }
-
-        // 이벤트 리스너 추가 (터치, 클릭, 키 입력, 스크롤 시 타이머 리셋)
-        window.addEventListener("mousemove", resetTimer);
-        window.addEventListener("mousedown", resetTimer);
-        window.addEventListener("keydown", resetTimer);
-        window.addEventListener("touchstart", resetTimer);
-        window.addEventListener("scroll", resetTimer); // 스크롤 이벤트 리스너 추가
-
-        // 페이지 로드 시 타이머 시작
-        window.addEventListener('DOMContentLoaded', resetTimer);
-    </script>
-    <div id="warningPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8); color: white; padding: 20px; border-radius: 10px;
-            font-size: 20px; text-align: center;">
-        <p id="warningText">5 초 후 언어 선택 화면으로 돌아갑니다.</p>
-    </div>
+      return menuItem;
+    }
+  </script>
 </body>
 
 </html>
